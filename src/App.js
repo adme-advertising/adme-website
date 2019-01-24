@@ -1,28 +1,29 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import wordpress from './api/wordpress'
+import SlideShow from './components/SlideShow'
+import NavBar from './components/NavBar'
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+    state = {
+        slideshowItems: []
+    }
+
+    componentDidMount = async () => {
+        const response = await wordpress.get('/wp/v2/pages/2294258')
+        this.setState({
+            slideshowItems: response.data.acf.slideshow_items
+        })
+    }
+
+    render = () => {
+        return (
+            <div>
+                <NavBar />
+                <SlideShow images={this.state.slideshowItems} which='image' />
+                <SlideShow images={this.state.slideshowItems} which='background_image' />
+            </div>
+        )
+    }
 }
 
 export default App;
